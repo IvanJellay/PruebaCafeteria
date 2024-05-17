@@ -49,13 +49,13 @@ namespace Cafeteria.Controllers
 				return Ok(new
 				{
 					estatus = 500,
-					mensaje = ex.Message,
+					mensaje = "Se produjo un error al guardar los cambios de la entidad",
 					codigo = -1
 				});
 			}
 		}
 
-		// 2. Obtener el número total de mesas disponibles y la canƟdad de lugares por mesa
+		// 2. Obtener el número total de mesas disponibles y la cantidad de lugares por mesa
 		[HttpGet("ObtenerMesasDisponibles")]
 		public async Task<IActionResult> ObtenerMesasDisponibles()
 		{
@@ -85,69 +85,25 @@ namespace Cafeteria.Controllers
 				return Ok(new
 				{
 					estatus = 500,
-					mensaje = ex.Message,
+					mensaje = "Se produjo un error al guardar los cambios de la entidad.",
 					codigo = -1
 				});
 			}
 		}
 
-		//3. Insertar una nueva orden 
-		[HttpPost("NuevaOrden")]
-		public async Task<IActionResult> NuevaOrden([FromBody] TbHccOrdenes nuevaOrden)
+		// 3. Insertar una nueva orden
+		[HttpPost("InsertarOrden")]
+		public async Task<IActionResult> InsertarOrden(TbHccOrdenes nuevaOrden)
 		{
 			try
 			{
 				_context.TbHccOrdenes.Add(nuevaOrden);
-				// Guarda los cambios en la base de datos
 				await _context.SaveChangesAsync();
 
 				return Ok(new
 				{
 					estatus = 200,
-					mensaje = "Nueva orden creada exitosamente",
-					codigo = 1,
-					data = nuevaOrden // puedes devolver la nueva orden creada
-				});
-			}
-			catch (Exception ex)
-			{
-				return Ok(new
-				{
-					estatus = 500,
-					mensaje = ex.Message,
-					codigo = -1
-				});
-			}
-		}
-
-		//4. Actualizar orden (Agregar nuevo producto)
-		[HttpPut("AgregarProducto/{ordenId}")]
-		public async Task<IActionResult> AgregarProducto(int ordenId, [FromBody] TbHccOrdenesDetalle nuevoProducto)
-		{
-			try
-			{
-				// Busca la orden existente por su Id
-				var orden = await _context.TbHccOrdenes.FindAsync(ordenId);
-				if (orden == null)
-				{
-					return Ok(new
-					{
-						estatus = 500,
-						mensaje = "Orden no encontrada",
-						codigo = -1
-					});
-				}
-
-				// Agrega el nuevo producto a la orden
-				orden.TbHccOrdenesDetalles.Add(nuevoProducto);
-
-				// Guarda los cambios en la base de datos
-				await _context.SaveChangesAsync();
-
-				return Ok(new
-				{
-					estatus = 200,
-					mensaje = "Producto agregado a la orden exitosamente",
+					mensaje = "Nueva orden insertada correctamente.",
 					codigo = 1
 				});
 			}
@@ -156,7 +112,46 @@ namespace Cafeteria.Controllers
 				return Ok(new
 				{
 					estatus = 500,
-					mensaje = ex.Message,
+					mensaje = "Se produjo un error al guardar los cambios de la entidad.",
+					codigo = -1
+				});
+			}
+		}
+
+		// 4. Actualizar orden (Agregar nuevo producto)
+		[HttpPut("AgregarProducto/{ordenId}")]
+		public async Task<IActionResult> AgregarProducto(int ordenId, TbHccOrdenesDetalle nuevoProducto)
+		{
+			try
+			{
+				var orden = await _context.TbHccOrdenes.FindAsync(ordenId);
+				if (orden == null)
+				{
+					return Ok(new
+					{
+						estatus = 500,
+						mensaje = "Orden no encontrada.",
+						codigo = -1
+					});
+				}
+
+				nuevoProducto.OrdId = ordenId;
+				_context.TbHccOrdenesDetalles.Add(nuevoProducto);
+				await _context.SaveChangesAsync();
+
+				return Ok(new
+				{
+					estatus = 200,
+					mensaje = "Nuevo producto agregado a la orden correctamente",
+					codigo = 1
+				});
+			}
+			catch (Exception ex)
+			{
+				return Ok(new
+				{
+					estatus = 500,
+					mensaje = "Se produjo un error al guardar los cambios de la entidad.",
 					codigo = -1
 				});
 			}
@@ -185,7 +180,7 @@ namespace Cafeteria.Controllers
 				return Ok(new
 				{
 					estatus = 200,
-					mensaje = "Estatus de la orden actualizado",
+					mensaje = "Estatus de la orden actualizado correctamente",
 					codigo = 1
 				});
 			}
@@ -194,7 +189,7 @@ namespace Cafeteria.Controllers
 				return Ok(new
 				{
 					estatus = 500,
-					mensaje = ex.Message,
+					mensaje = "Se produjo un error al guardar los cambios de la entidad",
 					codigo = -1
 				});
 			}
@@ -223,7 +218,7 @@ namespace Cafeteria.Controllers
 				return Ok(new
 				{
 					estatus = 200,
-					mensaje = "Orden eliminada (borrado lógico)",
+					mensaje = "Orden eliminada correctamente.",
 					codigo = 1
 				});
 			}
@@ -232,7 +227,7 @@ namespace Cafeteria.Controllers
 				return Ok(new
 				{
 					estatus = 500,
-					mensaje = ex.Message,
+					mensaje = "Se produjo un error al guardar los cambios de la entidad.",
 					codigo = -1
 				});
 			}

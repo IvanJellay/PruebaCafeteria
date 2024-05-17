@@ -13,7 +13,7 @@ public partial class TbHccOrdenesDetalle
 	public byte OrddetEstatus { get; set; }
 
 	[JsonIgnore]
-	public virtual TbHccOrdenes Ordenes { get; set; } = null!;
+	public virtual TbHccOrdenes? Ordenes { get; set; } 
 	[JsonIgnore]
-	public virtual TbHccProductos Productos { get; set; } = null!;
+	public virtual TbHccProductos? Productos { get; set; }
 }
